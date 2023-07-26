@@ -7,49 +7,72 @@
 </head>
 <body>
   <h1>Data Table Webpage</h1>
+  <!-- Add buttons to select database -->
+  <button onclick="fetchData('database1')">Show Database 1</button>
+  <button onclick="fetchData('database2')">Show Database 2</button>
+  <button onclick="fetchData('database3')">Show Database 3</button>
+  <!-- Add a table to display the data -->
   <table id="dataTable">
     <thead>
-      <tr>
-        <th>PersonID</th>
-        <th>LastName</th>
-        <th>FirstName</th>
-        <th>Address</th>
-        <th>City</th>
-      </tr>
+        <tr>
+            <th>PersonID</th>
+            <th>LastName</th>
+            <th>FirstName</th>
+            <th>Address</th>
+            <th>City</th>
+          </tr>
     </thead>
     <tbody id="tableBody"></tbody>
   </table>
 
   <script>
-    // Function to fetch data from the server using AJAX and update the table
-    function updateTable() {
-      const xhr = new XMLHttpRequest();
-      xhr.onreadystatechange = function () {
-        if (xhr.readyState === 4 && xhr.status === 200) {
-          const data = JSON.parse(xhr.responseText);
-          const tableBody = document.getElementById('tableBody');
-          let tableHTML = '';
-          data.forEach((row) => {
-            tableHTML += `<tr>
+    // Function to update the table with fetched data
+    function updateTable(data) {
+      const tableBody = document.getElementById('tableBody');
+      let tableHTML = '';
+      data.forEach((row) => {
+        tableHTML += `<tr>
                             <td>${row.PersonID}</td>
                             <td>${row.LastName}</td>
                             <td>${row.FirstName}</td>
                             <td>${row.Address}</td>
                             <td>${row.City}</td>
                           </tr>`;
-          });
-          tableBody.innerHTML = tableHTML;
-        }
-      };
-      xhr.open('GET', '/getData', true);
-      xhr.send();
+      });
+      tableBody.innerHTML = tableHTML;
     }
 
-    // Periodically fetch data every 5 seconds
-    setInterval(updateTable, 5000);
+    // Function to fetch data from the server based on selected database
+    function fetchData(selectedDatabase) {
+      const xhr = new XMLHttpRequest();
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+          const data = JSON.parse(xhr.responseText);
+          updateTable(data);
+        }
+      };
+      // Send the selected database to the server
+      xhr.open('GET', `/getData?database=${selectedDatabase}`, true);
+      xhr.send();
+      
+    }
 
-    // Initial fetch on page load
-    updateTable();
+    // Function to fetch data automatically every 5 seconds
+    function autoFetchData() {
+      const xhr = new XMLHttpRequest();
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+          const data = JSON.parse(xhr.responseText);
+          updateTable(data);
+        }
+      };
+      // Send the default database (you can change this if needed)
+      xhr.open('GET', '/getData?database=default', true);
+      xhr.send();
+    }
+    setInterval(autoFetchData, 2000);
+    // Periodically fetch data every 5 seconds
+    
   </script>
 </body>
 </html>
