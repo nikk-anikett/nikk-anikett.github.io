@@ -56,19 +56,24 @@
       xhr.send();
       
     }
+    
 
     // Function to fetch data automatically every 5 seconds
+    // function autoFetchData() {
+    //   const xhr = new XMLHttpRequest();
+    //   xhr.onreadystatechange = function () {
+    //     if (xhr.readyState === 4 && xhr.status === 200) {
+    //       const data = JSON.parse(xhr.responseText);
+    //       updateTable(data);
+    //     }
+    //   };
+    //   // Send the default database (you can change this if needed)
+    //   xhr.open('GET', '/getData?database=default', true);
+    //   xhr.send();
+    // }
     function autoFetchData() {
-      const xhr = new XMLHttpRequest();
-      xhr.onreadystatechange = function () {
-        if (xhr.readyState === 4 && xhr.status === 200) {
-          const data = JSON.parse(xhr.responseText);
-          updateTable(data);
-        }
-      };
-      // Send the default database (you can change this if needed)
-      xhr.open('GET', '/getData?database=default', true);
-      xhr.send();
+      const currentQuery = document.getElementById('dataTable').getAttribute('data-query');
+      fetchData(currentQuery);
     }
     setInterval(autoFetchData, 2000);
     // Periodically fetch data every 5 seconds
